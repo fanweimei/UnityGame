@@ -1,0 +1,199 @@
+版本：unity5.6.0f3
+
+004、生命周期函数（常用）
+（1）Awake
+（2）Start
+（3）FixedUpdate
+（4）Update
+（5）LateUpdate
+（6）OnApplicationQuit
+（7）Destroy
+
+005、Time类
+（1）deltaTime（受游戏实际运行情况影响）和fixedDeltaTime（固定）、smoothDeltaTime（变化较小）：没帧间隔
+（2）realtimeSinceStartup（不受游戏暂停影响）（一般用于测试性能）和time/fixedTime（受暂停影响）：从游戏启动开始运行时间
+（3）timeSinceLevelLoad（以场景为单位）：从场景加载后的运行时间
+（4）timeScale（设为0的时候可以暂停游戏）和unscaleTime（游戏运行时间）：运行速度、不受速度影响的游戏运行时间
+
+007、GameObject
+（1）创建（两种方法）
+        new GameObject
+        Instantiate（根据prefab或者场景中的物体克隆）
+        createPrimitive(PrimitiveType)（创建unity自带的基本模型）
+（2）属性
+activeInHierarchy：物体是否处于激活状态、可能是父级禁用导致的；当物体未激活状态时，不会执行update方法，但是物体仍然存在内存中
+activeSelf：自身是否处于激活状态
+tag：标签
+（3）查找方法
+Find：根据物体名称查找（比较耗费性能）
+FindGameObjectsByTag：根据标签查找、返回所有的物体
+FindWithTag：根据标签查找，返回第一个
+（4）消息类方法
+BroadcastMessage(方法名, 参数)：自身及子级的所有脚本中存在这个方法名的方法都执行；
+SendMessage(方法名, 参数)：自身的所有脚本中这个方法名对应的方法都会执行
+SendMessageUpwards(方法名，参数)：自身及所有父级的所有脚本中存在这个方法名对应的方法都会执行
+（5）组件类方法
+GetComponent/GetComponents：从自身中查找组件
+GetComponentInChildrent/GetComponentsInChildren：从自身及子级中查找组件
+GetComponentInParent/GetComponentsInParent：从自身及父级中查找组件
+（6）设置激活：SetActive(bool)
+
+010、GameObject、Component和Object的关系
+（1）一个游戏由多个场景组成；一个场景由多个物体组成；一个物体由多个组件组成。
+（2）组件有多种，常见的有：Transform、Mesh Renderer、Mesh Filter、RigidBody、自定义脚本等。
+（3）所有的类的基类：UnityEngine.Object（Component和GameObject是它的两个子类）
+
+011、Object方法和属性
+（1）name：GameObject和Component的name值都是指物体的名字
+（2）Destroy和DestroyImmediate区别：后者会立即销毁，前者会从场景中移除，放到垃圾池中，等到没有任何引用了再销毁；Destroy可以销毁GameObject物体，也可以在代码中指定this，销毁组件自身。
+（3）DontDestroyOnLoad：在由一个场景切换到另一个场景时，传入这个场景的gameObject，让这个场景的gameObject不销毁
+（4）FindObjectOfType：根据类型查找组件
+（5）Instantiate
+
+015、MonoBehaviour
+（1）属性
+isActiveAndEnabled
+enabled
+gameObject
+transform
+（2）invoke相关
+CancelInvoke：取消
+Invoke：调用
+Invoke：重复调用
+IsInvoking：是否正在调用
+（3）协程
+- 返回值是IEnumerator
+- 返回参数的时候使用yield return null/0
+- 携程方法的调用StartCoroutine(fn()) ，协程方法开启后，会继续运行下面的代码
+- 协程类函数：StartCoroutine、StopCoroutine、StopAllCoroutine
+（4）鼠标相关事件函数
+OnMouseUpAsButton：鼠标按下和抬起在一个物体上才会触发
+OnMouseUp：鼠标按下后抬起不在同一个物体上也会触发
+
+022、Mathf类
+Clamp(value, min, max)：返回的值限定在min~max之间
+DeltaAngle(a1, a2)：两个角度的最小差角
+Lerp(a, b, t)：插值运算、返回a+(b-a)*t (其中t<0返回a, t>1返回
+MoveTowards(a, b, t)：t>0时，从a到b，以速度t匀速运动，到达b停止；t<0时，反方向匀速运动，远离b
+PingPong(t, length)：像乒乓球一样在0~length之间来回匀速移动
+
+028、Input类
+（1）键盘相关
+GetKey：鼠标按下后一直会触发
+GetKeyDown：按下那一刻触发
+GetKeyUp：抬起的那一刻触发
+（2）鼠标相关：0左键、1右键、2中间
+GetMouseButton、GetMouseButtonDown、GetMouseButtonUP
+（3）虚拟鼠标相关：可以多个键盘按键和鼠标点击对应一个button事件
+GetButton、GetButtonDown、GetButtonUp
+（4）轴相关
+GetAxis：由0-1渐变的过程
+GetAxisRaw：没有渐变过程，直接变为1
+
+034、Vector2
+（1）静态方法
+down：y轴下
+up：y轴上
+left：x轴左
+right：x轴右
+one：单位向量
+zero：零向量
+（2）属性
+magitude：向量长度
+normalize：归一化后的向量
+sqrMagitude：没有求根号的向量长度
+x或this[0]：x值
+y或this[1]：y值
+（3）是结构体，不是类，所以不能直接transform.position.x来修改x坐标，position是transform的值类型属性，eg：
+    Vector3 pos = transform.position
+    pos.x = 10
+    transform.position = pos
+（4）方法
+equal或：判断两个向量是否相等
+Normalize：将自身归一化
+Set：赋值
+ClampMagnitude(v,length)：将向量长度限制在length之内
+Lerp：插值运算（可以用来做先快后慢的运动）
+MoveTowards：可以做匀速运动
+
+040、Random
+（1）Range(a,b)：随机生成a~b之间的随机数（不包括b）
+（2）InitState(int seed)：种子  （System.DateTime.Now.Ticks作为种子，每次产生的随机数都不同）
+（3）insideUnitCircle：在圆内随机产生一个位置
+（4）insideUnitSphere：在球体内随机产生一个位置
+
+042、Quaternion四元数
+（1）实现旋转的两种方式：
+cube.eulerAngles = new Vector3(x, y, z);
+cube.rotation = Quaternion.Euler(new Vector3(x, y, z))
+（2）LookRotation(v)：从起点望向终点
+（3）Lerp、Slerp：插值运算（角度变化用Slerp效果比较好些）
+
+045、RigidBody
+（1）控制位置的移动：
+- 通过修改position；
+- MovePosition(v)：从一个位置平滑的移动到另一个位置（插值运算）
+（2）控制物体旋转
+- 通过修改rotation；
+- MoveRotation(v)；
+（3）AddForce(v)：给物体施加运动的力、获得一个加速度。
+
+048、Camera
+（1）Camera.main：主摄像机、标签为mainCamera
+（2） Camera.main.ScreenPointToRay(v)：获取射线
+
+049、Application
+（1）Streaming Assets：打包后文件是独立的，
+
+051、SceneManager
+（1）LoadScene：加载场景
+（2）事件：activeSceneChanged、sceneLoaded
+
+
+第二部分
+01、射线检测
+（1）Physics.Raycast(ray)  参数：射线
+（2）Physics.Raycast(ray, dis)  参数：射线、距离
+（3）Physics.Raycast(ray, RaycastHit)  参数：射线、碰撞点信息
+（4）Physics.Raycast(ray, dis, layer)  参数：射线、距离、层
+（5）Physics.RaycastAll：会检测所有的碰撞物体
+
+04、UGUI事件
+（1）通过拖拽的方式（拖拽物体到控件上，将物体上的方法添加进去）
+（2）通过代码实现
+- Button：button.GetComponent<Button>().onClick.AddListener(this.OnButtonClick)
+- slider/dropdown/toggle：uiObject.GetComponent<Toggle/Dropdown/Slider>().onValueChanged.AddListener(fn)
+（3）通过实现接口实现（需要将脚本放到UI控件上、Raycast target也需要勾选上才会触发事件）
+
+08、WWW下载图片
+WWW www = new WWW(url);
+
+09、Touches事件（插件：Easytouch）
+Input.touches：移动端触摸的手指信息  touch.position...
+
+10、Camera
+
+12、CharacterController
+（1）SimpleMove(speedV)：参数是速度；会有重力的影响
+（2）Move(disV)：参数是距离向量
+（3）isGrounded：是否接触了地面
+（3）OnControllerColliderHit(ControllerColliderHit hit)：碰撞事件
+
+13、Mesh设置
+（1）获取：GetComponent<MeshFilter>()
+（2）两种mesh
+- mesh：重新复制一份，创建一个新的实例
+- shareMesh：直接赋值，共享同一个mesh
+
+14、Material
+（1）获取：GetComponent<MeshRenderer>().material（主材质）
+
+15、Animator类
+
+16、API变更
+（1）获取组件的方法 GetComponent<组件类>()
+（2）粒子系统 ParticleSystem.MainModule
+（3）场景加载：SceneManager.LoadScene(name)
+- sceneLoaded：场景加载完事件
+（4）2D/3D sound
+- Spatial Blend：设置2D或3D的声音
