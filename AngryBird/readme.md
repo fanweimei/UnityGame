@@ -8,4 +8,6 @@
 5. 给小鸟添加`Box Colider`组件，可以点击；让小鸟的位置随鼠标移动
     - 先让屏幕坐标转化为世界坐标`Camera.main.ScreenToWordPoint(Input.mousePosition)`
 6. 给右边的弹弓right添加一个rightPos的空子物体，用来设置位置；在小鸟和rightPos之间设置一个最大的距离。
-7. 
+7. 小鸟飞出
+    - isKinematic 在按下时设置为true，抬起时设置为false （为了减缓飞出去的速度，按下后不计算动力，鼠标抬起才计算）
+    - 0.1s后设置`SpringJoint2D`组件的enable为false（为了小鸟飞出去有速度，也就是在鼠标抬起时，给0.1s的时间让小鸟形成一个动力飞出去）

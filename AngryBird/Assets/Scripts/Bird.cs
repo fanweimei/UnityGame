@@ -5,22 +5,15 @@ using UnityEngine;
 public class Bird : MonoBehaviour {
     private bool isClick = false;
     public Transform rightPos;
-    public float maxDis = 1;
-
-    private void OnMouseDown()
-    {
-        isClick = true;
-    }
-
-    private void OnMouseUp()
-    {
-        isClick = false;
-    }
+    public float maxDis = 1.3f;
+    private SpringJoint2D sp;
+    private Rigidbody2D rb;
 
     // Use this for initialization
     void Start () {
-        print(transform.position);
-	}
+        sp = GetComponent<SpringJoint2D>();
+        rb = GetComponent<Rigidbody2D>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -36,4 +29,23 @@ public class Bird : MonoBehaviour {
             }
         }
 	}
+
+    private void OnMouseDown()
+    {
+        isClick = true;
+        rb.isKinematic = true;
+
+    }
+
+    private void OnMouseUp()
+    {
+        isClick = false;
+        rb.isKinematic = false;
+        Invoke("Fly", 0.1f);
+    }
+
+    void Fly()
+    {
+        sp.enabled = false;
+    }
 }

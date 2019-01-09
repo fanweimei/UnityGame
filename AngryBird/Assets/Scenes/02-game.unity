@@ -489,7 +489,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rightPos: {fileID: 1415882620}
-  maxDis: 1
+  maxDis: 1.3
 --- !u!58 &1207600633
 CircleCollider2D:
   m_ObjectHideFlags: 0
