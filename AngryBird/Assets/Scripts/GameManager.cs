@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour {
 
     public GameObject win;
     public GameObject lose;
+    public GameObject[] stars;
 
     private void Awake()
     {
@@ -65,6 +66,15 @@ public class GameManager : MonoBehaviour {
 
     public void ShowStars()
     {
+        StartCoroutine("show");
+    }
 
+    IEnumerator show()
+    {
+        for (int i = 0; i < birds.Count + 1; i++)
+        {
+            yield return new WaitForSeconds(0.2f);
+            stars[i].SetActive(true);
+        }
     }
 }

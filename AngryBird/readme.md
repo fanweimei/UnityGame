@@ -53,3 +53,16 @@
 15. 修改火花粒子系统
     - 把三颗星星加入到win的UI界面中，并调整它们的位置，开始时不显示
     - 导入root的package，创建一个空对象roots，把root下的物体拖拽到roots下（不需要root的效果），把Scaling Mode调整为Local（这样修改scale才会有效果），然后再修改transform中scale的x,y,z都为0.5，Start size也都减半
+16. 渲染层级关系
+    - Camera：Depth先绘制depth低的物体
+    - 同一个camera：Sorting layer在前面的先绘制
+    - Order in layer：小的先绘制
+    - Inspector面板上的Layer：用做摄像机是否将某些Layer上的物体显示出来，不影响层级渲染
+17. 把粒子系统显示在UI之前
+    - 问题：`Canvas UI`是位于所有物体之上的，要让粒子prefab显示在`Canvas UI`上需要做些处理
+    - Canvas默认是位于UI层，把Canvas的`Render Mode`改为`Screen Space-Camera`，创建一个Camera，命名为UICamera，并指定给Camera，UICamera的`Clear Flags`改为`Depth only`，`Culling Mask`改为UI（所以UICamera只拍摄UI层的物体，并且与`Main Camera`拍摄的物体进行一个深度颜色的融合，底层也就能显示其它物体），将Projection设置为Orthographic（因为是2D的）
+    - 将roots的Layer改为UI，并移入Canvas中，并将下面两个子物体的Renderer的Sorting Layer改为Player
+    - 也就是说：UICamera的depth大于Main Camera的deth，所以UICamera拍摄的UI层上的物体（Canvas）位于其它物体上面，而roots的Sorting Layer大于Canvas的其它物体，所以粒子效果最后能显示在最上面
+18. 让星星一颗颗显示在屏幕上
+    - 在ShowStars方法中判断小鸟的数量，以此来显示星星的数量，剩余小鸟的数量+1就是星星的数量
+    - 让星星一颗颗显示，则要在IEnumerator方法中通关`return new WaitForSeconds(0.2f)`来将要显示的星星设置Active为true
