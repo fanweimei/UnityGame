@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     public List<Bird> birds;
@@ -73,8 +74,22 @@ public class GameManager : MonoBehaviour {
     {
         for (int i = 0; i < birds.Count + 1; i++)
         {
+            if (i>=stars.Length)
+            {
+                break ;
+            }
             yield return new WaitForSeconds(0.2f);
             stars[i].SetActive(true);
         }
+    }
+
+    public void Replay()
+    {
+        SceneManager.LoadScene(2);
+    }
+
+    public void Home()
+    {
+        SceneManager.LoadScene(1);
     }
 }

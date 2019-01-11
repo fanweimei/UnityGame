@@ -66,3 +66,50 @@
 18. 让星星一颗颗显示在屏幕上
     - 在ShowStars方法中判断小鸟的数量，以此来显示星星的数量，剩余小鸟的数量+1就是星星的数量
     - 让星星一颗颗显示，则要在IEnumerator方法中通关`return new WaitForSeconds(0.2f)`来将要显示的星星设置Active为true
+19. 添加暂停的动画
+    - 在Bird添加一个变量，如果飞出去了就不能再点击了
+    - 在场景中添加一个暂停的按钮，再添加一个暂停遮罩面板，面板中分别有：播放按钮、重新播放按钮、home按钮
+    - 给暂停遮罩面包pausePanel添加入场和出场的动画
+20. 添加鼠标注册事件
+    - 在`file/Building Setting`中将三个场景都拖过去
+    - 在GameManager脚本中添加Replay和Home方法，通过`SceneManager.LoadScene`方法实现
+    - 在win和lose面板中的retry和home按钮上添加Button组件，然后把GameManager物体拖过去，分别监听Relay和Home方法事件
+    - pausePanel的动画
+        - 给pausePanel添加pause和resume动画后，会自动生成一个pausePanel的Animator状态机
+        - 需要给pausePanel单独添加一个PausePanel的脚本，因为每次暂停跟播放都有动画
+        - `pausePanel Animator`中设置三个状态：default默认状态、pause暂停状态、resume继续播放状态；设置一个isPause的bool变量，默认状态下pausePanel是显示的，但是bg的透明度为0，leftPanel位于坐标-90；当isPause为true时，就会执行pause动画（过渡到pause状态）；当isPause为false时，就会执行resume动画（过渡到resume状态），resume到default之间的`Has Exit Time`必须勾选上，这样resume的动画执行完时，就会进入default默认状态
+        - 在PausePanel脚本中有四个方法：
+            - 点击场景中的pause按钮，执行Pause方法，Animator的isPause变量设置为false,按钮的Active设置为false
+            - 当pause动画执行结束后，添加一个事件PauseAnimEnd，`Time.timeScale=0`，这样场景的物体就停止运行了
+            - 当点击pausePanel面板中的resume按钮，执行Resume方法，先将`Time.timeScale=1`（这样动画才会执行），再讲Animator的isPause设置为false
+            - 当resume动画执行结束后，添加一个事件ResumeAnimEnd，让按钮的Active变为true
+21. 添加镜头跟随
+    - 让摄像机的x轴的位置等于小鸟在飞行过程中的位置，并且给个限定，最小（初始0）到最大15
+        ```js
+            float posX = transform.position.x;
+            Vector3 initPos = Camera.main.transform.position;
+            Camera.main.transform.position = Vector3.Lerp(initPos, new Vector3(Mathf.Clamp(posX, 0, 15), initPos.y, initPos.z), cameraFollowSpeeed * Time.deltaTime);
+        ```js
+    - 当一只小鸟飞出去后，下一只小鸟的脚本就会启动，所以下一只小鸟就位的时候，能再回到原点
+22. 添加音效
+    - 给小鸟添加：选择、飞出去、死亡的声音
+    - 给猪和木头添加：撞击、死亡的声音
+    - 添加方法：`AudioSource.PlayClipAtPoint(clip, transform.position)`，不在物体上绑定AudioSource组件，这样物体即使销毁，也可以正常播放死亡的声音
+23. 添加黄色小鸟（飞行过程中，点击左键，获得一次飞行速度翻倍的机会）
+    - 复制一份redBird，命名为yellowBird，把小鸟图片sprite替换为黄色小鸟，调整下RigidBody2D的大小
+    - 在Bird脚本中，设置一个isFly的变量，在小鸟飞出去后isFly为true，在update方法中，当isFly为true并且点击了鼠标左键，就给小鸟添加特效，执行ShowSkills的方法
+    - YellowBird脚本继承Bird，重新实现ShowSkills，让RigidBody2D的velocity*2
+    - 制作成prefab
+24. 添加绿色小鸟（飞行过程中，点击左键，获得一次飞行方向反转的机会，也就X轴上的速度翻转）
+    - 添加方法同上
+    - 给所有小鸟添加受伤的图片，在Bird脚本中增加Hurt方法（替换为受伤的图片），在Pig碰撞检测事件中调用改方法（不在Bird的碰撞检测中调用，因为游戏开始时，小鸟会与地面碰撞）
+25. 添加黑色小鸟（点击小鸟，周围的物体全都消失）
+    - 制作blackBird，再添加一个`Circle Collider`，把radius设为1，isTrigger设为true，
+    - 添加BlackBird脚本，监听OnTriggerEnter2D事件，把触碰到的物体加入到blocks集合中；监听OnTriggerExit2D事件，blocks集合中移除对象
+    - 因此ShowSkill方法中，可以遍历blocks集合，让集合中的每个对象都Dead
+26. 处理黑色小鸟爆炸问题
+    - 增加一个OnClear方法，在ShowSkill中调用，OnClear方法中完成速度清零、添加爆炸效果、renderer不可见、禁用CircleCollider2D、停止拖尾
+    - 重写Next方法，去掉爆炸效果
+27. 处理星星数组越界的问题
+    - 在GameManager的show方法中，当大于星星数时，直接break
+28. 制作选择地图UI界面

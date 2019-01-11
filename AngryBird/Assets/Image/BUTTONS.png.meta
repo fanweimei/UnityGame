@@ -141,9 +141,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 172
-        y: 750
-        width: 103
-        height: 111
+        y: 762
+        width: 102
+        height: 99
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -224,10 +224,10 @@ TextureImporter:
       name: BUTTONS_8
       rect:
         serializedVersion: 2
-        x: 958
-        y: 664
-        width: 80
-        height: 85
+        x: 962
+        y: 680
+        width: 71
+        height: 69
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -775,7 +775,7 @@ TextureImporter:
         width: 99
         height: 95
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
