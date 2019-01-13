@@ -32,7 +32,7 @@ public class Pig : MonoBehaviour {
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        print(collision.relativeVelocity.magnitude);
+      //  print(collision.relativeVelocity.magnitude);
         if(collision.gameObject.tag == "bird")
         {
             AudioPlay(birdHurtClip);

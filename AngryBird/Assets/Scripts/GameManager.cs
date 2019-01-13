@@ -8,6 +8,8 @@ public class GameManager : MonoBehaviour {
     public List<Pig> pigs;
     public static GameManager instance;
     private Vector3 originPos;
+    private int starsNum = 0;
+    private int totalNum = 10;
 
     public GameObject win;
     public GameObject lose;
@@ -40,10 +42,12 @@ public class GameManager : MonoBehaviour {
                 birds[i].transform.position = originPos;
                 birds[i].enabled = true;
                 birds[i].sp.enabled = true;
+                birds[i].canClick = true;
             } else
             {
                 birds[i].enabled = false;
                 birds[i].sp.enabled = false;
+                birds[i].canClick = false;
             }
         }
     }
@@ -72,24 +76,46 @@ public class GameManager : MonoBehaviour {
 
     IEnumerator show()
     {
-        for (int i = 0; i < birds.Count + 1; i++)
+        for (; starsNum < birds.Count + 1; starsNum++)
         {
-            if (i>=stars.Length)
+            if (starsNum>=stars.Length)
             {
                 break ;
             }
             yield return new WaitForSeconds(0.2f);
-            stars[i].SetActive(true);
+            stars[starsNum].SetActive(true);
         }
+        print(starsNum);
     }
 
     public void Replay()
     {
+        SaveData();
         SceneManager.LoadScene(2);
     }
 
     public void Home()
     {
+        SaveData();
         SceneManager.LoadScene(1);
+    }
+
+    public void SaveData()
+    {
+        if(starsNum > PlayerPrefs.GetInt(PlayerPrefs.GetString("nowLevel"), 0))
+        {
+            PlayerPrefs.SetInt(PlayerPrefs.GetString("nowLevel"), starsNum);
+        }
+        ReCountTotalNum();
+    }
+
+    public void ReCountTotalNum()
+    {
+        int sum = 0;
+        for (int i = 0; i <= totalNum; i++)
+        {
+            sum += PlayerPrefs.GetInt("level" + i.ToString());
+        }
+        PlayerPrefs.SetInt("totalNum", sum);
     }
 }

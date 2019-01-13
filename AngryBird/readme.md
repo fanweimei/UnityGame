@@ -85,7 +85,7 @@
             - 当resume动画执行结束后，添加一个事件ResumeAnimEnd，让按钮的Active变为true
 21. 添加镜头跟随
     - 让摄像机的x轴的位置等于小鸟在飞行过程中的位置，并且给个限定，最小（初始0）到最大15
-        ```js
+        ```c#
             float posX = transform.position.x;
             Vector3 initPos = Camera.main.transform.position;
             Camera.main.transform.position = Vector3.Lerp(initPos, new Vector3(Mathf.Clamp(posX, 0, 15), initPos.y, initPos.z), cameraFollowSpeeed * Time.deltaTime);
@@ -112,4 +112,56 @@
     - 重写Next方法，去掉爆炸效果
 27. 处理星星数组越界的问题
     - 在GameManager的show方法中，当大于星星数时，直接break
-28. 制作选择地图UI界面
+28. 制作选择地图UI界面（01-level）
+    - 创建背景bg，填充背景，导入的图片先`Set Native Size`，再调整大小，按住alt键，以中心点进行缩放
+    - 再关卡面板，如果可以玩，添加星星star（已获取的星星/总星星）；否在显示锁+需要的星星数lock
+    - 第一关默认是可以直接玩的，后面两关需要解锁，第四个是个纯图片
+29. 地图选择的逻辑编写
+    - 给mapPanel添加脚本MapSelect，脚本设置starsNum(每一关解锁需要的星星数)
+    - 通过PlayerPrefs(存储数据用的)获取当前所有的星星总数totalNum，如果大于starsNum，就让lock显示，star隐藏
+30. 制作关卡选择界面
+    - 创建背景，添加一个返回按钮，添加一个grid物体（含有`Grid Layout Group`组件，用来给关卡布局）
+    - 创建一个levelSelect，添加背景、解锁背景、关卡数、星星、脚本LevelSelect，放入grid中，让第一个关卡可点击，其它都是成未解锁状态
+31. 添加地图选择和关卡选择界面的交互
+    - 再MapSelect脚本中添加Selected方法，点击mapPanel时，跳转到对应的关卡选择界面panel
+32. 存储关卡星星数据
+    - 需要存储的数据
+        - 每一关完成的星星数量，涉及更新，涉及下一关是否可以开启，以及level界面星星个数的显示
+        - 星星数量的总和，便利所有星星数非0的关卡星星数，然后相加
+        - 当前选择的关卡名字，用于关卡的加载
+    - 步骤
+        - 在LevelSelect脚本中，存储当前选择的关卡，key为nowLevel， value为level+关卡的名字（数字）
+        - 在GameManager脚本中，游戏结束（Replay和Home方法中）先获取nowLevel，再存储当前关卡获取的星星数starsNum
+33. 选择关卡，场景跳转
+    - 选择02-game场景，创建一个空对象level1（0,0,0)，把所有物体都移入level1，放入Resources(动态加载资源，看下换装和BoundleAssets的视频教程)
+    - 制作level2，把block和pig重新搭下
+    - 点击按钮，加载game场景，在Main Camera上绑定LoadScene脚本，Awake方法中加载level资源
+        ```c#
+            print(PlayerPrefs.GetString("nowLevel"));
+            Instantiate(Resources.Load(PlayerPrefs.GetString("nowLevel")));
+        ```
+    - 关卡的按钮的子级num和那三颗星星不能添加Button组件，不然关卡的按钮就不起作用
+35. 处理关卡界面星星个数的 显示
+    - 在LevelSelect脚本中，Start方法中，获取当前关卡的星星数，然后让对应的星星激活显示即可
+    - 在SaveData保存当前关卡星星数时，更新totalNum的值
+36. 关卡之间的切换
+    - 在LevelSelect脚本中，Start方法，第一关以及上一关的获得的星星大于0，当前关isSelect都是true
+37. 地图切换、制作多个关卡
+    - 修改每个mapPanel下面的level数字，让每个level数字连续
+38. snap setting使用介绍
+    - 制作level3,更改block和猪， 更改level2的小鸟
+    - 以同样的方法制作level4/5/6，只是更改了背景、草地、地板（可以更改小鸟、block）
+    - 以同样的方法制作level7/7/9，只是更改了背景、草地、地板（可以更改小鸟、block）
+39. 地板信息的显示
+    - 给每个panel上的返回按钮注册事件
+    - 更改mapPanel上star Text的数值
+    - 给01-level场景加个音乐（在Camera上面加）
+40. 异步加载场景
+    - 在loading场景中，设置背景，正在加载的文字，添加一个脚本，2s后就LoadScene(1)
+41. 游戏发布
+    - 在游戏开始加载页面，设置游戏屏幕的大小`Screen.SetResolution(960, 600, false)`,免得变形
+    - File/Play Setting，设置游戏名字等，点击发布
+42. 修改bug
+    - 点击第2只、3只小鸟等，虽然不会移动，但是鼠标抬起后，小鸟会爆炸消失：虽然禁止了脚本，然后会响应mouse事件，所有要把脚本中的canClick设置为public，在GameManager寻找下一只小鸟的时候，再把第一只设置为true,其余小鸟都为false
+    - 暂停游戏之后，再点击第一只小鸟，然后会画线：在Bird中再设置一个变量isReleased，当小鸟飞出去的时候，就为true，那么暂停游戏那一刻，应该先判断第一只小鸟是否还没飞出去，如果没飞出去，就让canClick为false，在Resume方法总，让第一只小鸟的canClick为true
+    - 特技小鸟飞出去后，如果点击了暂停，仍然会执行特技方法：在Bird的Update方法先判断是否鼠标与EventSystem(canvas)发生了交互，如果是就直接返回(`EventSystem.current.IsPointerOverGameObject()`)

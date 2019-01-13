@@ -35,12 +35,28 @@ public class PausePanel : MonoBehaviour {
     {
         anim.SetBool("isPause", true);
         button.SetActive(false);
+
+        if(GameManager.instance.birds.Count > 0)
+        {
+            if(GameManager.instance.birds[0].isReleased == false)
+            {
+                GameManager.instance.birds[0].canClick = false;
+            }
+        }
     }
 
     public void Resume()
     {
         Time.timeScale = 1;
         anim.SetBool("isPause", false);
+
+        if (GameManager.instance.birds.Count > 0)
+        {
+            if (GameManager.instance.birds[0].isReleased == false)
+            {
+                GameManager.instance.birds[0].canClick = true;
+            }
+        }
     }
 
     public void PauseAnimEnd()

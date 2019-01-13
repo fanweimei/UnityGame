@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Bird : MonoBehaviour {
     private bool isClick = false;
@@ -9,7 +10,9 @@ public class Bird : MonoBehaviour {
     public SpringJoint2D sp;
     protected Rigidbody2D rb;
     protected BirdTrail trail;
-    private bool canClick = true;
+    [HideInInspector]
+    public bool canClick = false;
+    public bool isReleased = false;
     private bool isFly = false;
     protected SpriteRenderer sRenderer;
     public Sprite hurtImage;
@@ -22,7 +25,7 @@ public class Bird : MonoBehaviour {
     public float cameraFollowSpeeed = 3;
 
     public AudioClip select;
-    public AudioClip fly;
+    public AudioClip fly; 
     //public AudioClip dead;
 
     // Use this for initialization
@@ -35,6 +38,10 @@ public class Bird : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if(EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
 		if(isClick)
         {
             // 更新小鸟位置
@@ -95,6 +102,7 @@ public class Bird : MonoBehaviour {
 
     void Fly()
     {
+        isReleased = true;
         isFly = true;
         AudioPlay(fly);
         trail.TrailStart();
